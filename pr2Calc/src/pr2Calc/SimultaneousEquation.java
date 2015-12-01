@@ -54,10 +54,10 @@ public class SimultaneousEquation extends Matrix {
 
     public static void main(String[] args) {
         double[][] func = {
-                {2, 1, 3, 4, 2},
-                {3, 2, 5, 2, 12},
-                {3, 4, 1, -1, 4},
-                {-1, -3, 1, 3, -1}};
+                { 1,  2,  3,  4,  22},
+                {-3,  3, -2,  2, -14},
+                { 6, -2,  4, -8,   8},
+                { 3, -5,  1,  1,  23}};
         SimultaneousEquation simultaneousEquation = new SimultaneousEquation(func);
         simultaneousEquation._solveByGaussJordan();
     }
