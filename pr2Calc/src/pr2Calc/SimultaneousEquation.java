@@ -43,22 +43,51 @@ public class SimultaneousEquation extends Matrix {
         for (int i = 0; i < _getNumOfRow(); i++) {
             answers_[i] = _getComponentOf(i, _getNumOfColumn() - 1);
         }
+        _printAnswer();
+    }
+
+
+    public void _solveByGauss() {
+        answers_ = new double[_getNumOfRow()];
+        _printMatrix();
+
+        //‘Oi
+        for (int i = 0; i < _getNumOfRow() - 1; i++) {
+            for (int j = i + 1; j < _getNumOfRow(); j++) {
+                _subtractRowFrom(i, j);
+            }
+            _printMatrix();
+            System.out.println();
+        }
+
+        //Œã‘Þ
+        for (int i = _getNumOfRow() - 1; i >= 0; i--) {
+            double anst = _getComponentOf(i, _getNumOfColumn() - 1);
+            for (int j = i + 1; j < _getNumOfRow(); j++) {
+                anst -= _getComponentOf(i, j) * answers_[j];
+            }
+            answers_[i] = anst / _getComponentOf(i, i);
+        }
+        _printAnswer();
+
+    }
+
+    private void _printAnswer() {
         System.out.println("Answer:");
         for (int i = 0; i < _getNumOfRow(); i++) {
             if (i != 0) System.out.print(", ");
             System.out.print("x" + (i + 1) + "=" + String.format("%1$4.1f", answers_[i]));
 
         }
-
     }
 
     public static void main(String[] args) {
         double[][] func = {
-                { 1,  2,  3,  4,  22},
-                {-3,  3, -2,  2, -14},
-                { 6, -2,  4, -8,   8},
-                { 3, -5,  1,  1,  23}};
+                {1, 2, 3, 4, 22},
+                {-3, 3, -2, 2, -14},
+                {6, -2, 4, -8, 8},
+                {3, -5, 1, 1, 23}};
         SimultaneousEquation simultaneousEquation = new SimultaneousEquation(func);
-        simultaneousEquation._solveByGaussJordan();
+        simultaneousEquation._solveByGauss();
     }
 }
