@@ -36,6 +36,22 @@ public class Matrix {
         return m_[row][column];
     }
 
+    /**
+     * 値をセットします
+     *
+     * @param row    　行
+     * @param column 　列
+     * @param value  　値
+     */
+    protected void _setComponentOf(int row, int column, double value) {
+        // 指定した範囲が存在しない場合
+        if (row > _getNumOfRow() || column > _getNumOfColumn() || row < 0 || column < 0) {
+            System.out.println("指定する要素は存在しません.");
+            System.exit(0);
+        }
+        m_[row][column] = value;
+    }
+
     // 行列の内容を表示するメソッド（_print以降に適当な名前をつけよ）
     // 必要に応じて、同名で引数の異なるメソッドを複数作成しても良い
 //    protected void _print○○(){
