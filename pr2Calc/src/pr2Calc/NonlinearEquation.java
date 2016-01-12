@@ -1,7 +1,6 @@
 package pr2Calc;
 
 
-import javafx.geometry.Pos;
 
 import java.util.function.Function;
 
@@ -46,7 +45,7 @@ public class NonlinearEquation {
                 return true;
             }
             pastMid = xMid;
-            if ((value < 0) ^ (func.apply(x0) < 0)) { //符号違いだったら
+            if ((value < 0)/* ^ (func.apply(x0) < 0)*/) { //符号違いだったら
                 x1 = xMid;
             } else {
                 x0 = xMid;
@@ -54,25 +53,6 @@ public class NonlinearEquation {
         }
         return false;
 
-//
-//        value = initialValue_;
-//        System.out.printf("xMid = %f, f(xMid)=%f, xPastMid =%f\n", (NEGATIVE_MAX + POSITIVE_MAX) / 2, Math.sin(value + alfa_) / (value + alfa_), pastMid);
-//        xMid = (NEGATIVE_MAX + POSITIVE_MAX) / 2;
-//        while (Math.abs(Math.sin(value + alfa_) / (value + alfa_) - value) >= EPSILON) {
-//            value = Math.sin(value + alfa_) / (value + alfa_);//一度計算
-//            if (xMid < pastMid) {//中間値より小さければ
-//                max = xMid;
-//            } else if (xMid > pastMid) {
-//                min = xMid;
-//            }
-//            pastMid = xMid;
-//            xMid = (min + max) / 2;
-//            System.out.printf("xMid = %f, f(xMid)=%f, xPastMid =%f\n", xMid, Math.sin(value + alfa_) / (value + alfa_), pastMid);
-//            if (count > 100) return false;
-//            count++;
-//
-//        }
-//        return true;
     }
 
 
@@ -106,8 +86,5 @@ public class NonlinearEquation {
         if (!eqn._solveNLEByBlsectlonMethod()) {
             System.out.println("解が見つからなかった");
         }
-        // 初期反復解を設定
-        // 近似解が得られたら近似解＆何回目の繰り返しで解が得られたかを表示
-        // 得られなければ、解が見つからなかったことを表示
     }
 }
