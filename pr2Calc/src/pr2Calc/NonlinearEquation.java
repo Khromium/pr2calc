@@ -1,7 +1,6 @@
 package pr2Calc;
 
 
-
 import java.util.function.Function;
 
 public class NonlinearEquation {
@@ -9,9 +8,9 @@ public class NonlinearEquation {
     public static final double EPSILON = 0.001;//I—¹ğŒ
     public static final int MAXIMUM_IT = 100;//ŒJ‚è•Ô‚µ‰ñ”‚ÌÅ‘å’l
     private static final double NEGATIVE_MAX = 0.0;
-    private static final double POSITIVE_MAX = 3.0;
+    private static final double POSITIVE_MAX = 5.0;
     private double initialValue_;//‰Šú”½•œ‰ğx_0‚ğŠi”[
-    private double alfa_ = 3.0;//ŒÅ’è
+    private double alfa_ = 1.0;//ŒÅ’è
     private double answer_;//‰ğ‚ğŠi”[
     private int iteration_;//Œ»İ‚Ì”½•œ‰ñ”‚ğŠi”[
 
@@ -23,6 +22,35 @@ public class NonlinearEquation {
         alfa_ = alfa;
 
     }
+
+    private boolean _solveNLEByRegulaFalsi() {
+        double value = 0.0;
+        double xMid = 0.0, pastMid = 0.0;
+        double x0 = NEGATIVE_MAX, x1 = POSITIVE_MAX;
+        iteration_ = 0;
+
+        Function<Double, Double> func = (x) -> (x + alfa_ == 0) ? 1.0 : (Math.sin(x + alfa_) / (x + alfa_));
+        while (true) {
+            if (++iteration_ == MAXIMUM_IT) break;  //ãŒÀ‚É’B‚µ‚½ê‡
+            xMid = (x0 * func.apply(x1) - x1 * func.apply(x0)) / (func.apply(x1) - func.apply(x0));
+            value = func.apply(xMid);//“K—p
+            System.out.println("xNext = " + xMid + ", f(xNext) = " + value + ", xPastNext = " + pastMid);
+
+            if (Math.abs(xMid - pastMid) < EPSILON || value == 0) {
+                answer_ = xMid;
+                System.out.printf("x = " + answer_ + " at iteration " + (iteration_ - 1) + ".");
+                return true;
+            }
+            pastMid = xMid;
+            if ((value < 0)) { //•„†ˆá‚¢‚¾‚Á‚½‚ç
+                x1 = xMid;
+            } else {
+                x0 = xMid;
+            }
+        }
+        return false;
+    }
+
 
     //fx=sin(x+alfa)/(x+a)
     //‰Šú”½•œ‰ğ‚Í1.5
@@ -83,7 +111,7 @@ public class NonlinearEquation {
 //            System.out.println("‰ğ‚ªŒ©‚Â‚©‚ç‚È‚©‚Á‚½");
 //        }
         NonlinearEquation eqn = new NonlinearEquation(3, 0);
-        if (!eqn._solveNLEByBlsectlonMethod()) {
+        if (!eqn._solveNLEByRegulaFalsi()) {
             System.out.println("‰ğ‚ªŒ©‚Â‚©‚ç‚È‚©‚Á‚½");
         }
     }
