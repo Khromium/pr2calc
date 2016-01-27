@@ -10,45 +10,17 @@ public class NonlinearEquation {
     private static final double NEGATIVE_MAX = 0.0;
     private static final double POSITIVE_MAX = 5.0;
     private double initialValue_;//初期反復解x_0を格納
-    private double alfa_ = 1.0;//固定
+    private double alfa_ = 3.05;//固定
     private double answer_;//解を格納
     private int iteration_;//現在の反復回数を格納
 
 
     // コンストラクタ(最低一つ用意せよ）
-    public NonlinearEquation(double initialValue, double alfa) {
-        // 処理を実装せよ
+    public NonlinearEquation(double initialValue/*, double alfa*/) {
+//        // 処理を実装せよ
         initialValue_ = initialValue;
-        alfa_ = alfa;
+//        alfa_ = alfa;
 
-    }
-
-    private boolean _solveNLEByRegulaFalsi() {
-        double value = 0.0;
-        double xMid = 0.0, pastMid = 0.0;
-        double x0 = NEGATIVE_MAX, x1 = POSITIVE_MAX;
-        iteration_ = 0;
-
-        Function<Double, Double> func = (x) -> (x + alfa_ == 0) ? 1.0 : (Math.sin(x + alfa_) / (x + alfa_));
-        while (true) {
-            if (++iteration_ == MAXIMUM_IT) break;  //上限に達した場合
-            xMid = (x0 * func.apply(x1) - x1 * func.apply(x0)) / (func.apply(x1) - func.apply(x0));
-            value = func.apply(xMid);//適用
-            System.out.println("xNext = " + xMid + ", f(xNext) = " + value + ", xPastNext = " + pastMid);
-
-            if (Math.abs(xMid - pastMid) < EPSILON || value == 0) {
-                answer_ = xMid;
-                System.out.printf("x = " + answer_ + " at iteration " + (iteration_ - 1) + ".");
-                return true;
-            }
-            pastMid = xMid;
-            if ((value < 0)) { //符号違いだったら
-                x1 = xMid;
-            } else {
-                x0 = xMid;
-            }
-        }
-        return false;
     }
 
 
@@ -102,17 +74,76 @@ public class NonlinearEquation {
         return true;
     }
 
+    private boolean _solveNLEByRegulaFalsi() {
+        double value = 0.0;
+        double xMid = 0.0, pastMid = 0.0;
+        double x0 = NEGATIVE_MAX, x1 = POSITIVE_MAX;
+        iteration_ = 0;
+
+        Function<Double, Double> func = (x) -> (x + alfa_ == 0) ? 1.0 : (Math.sin(x + alfa_) / (x + alfa_));
+        while (true) {
+            if (++iteration_ == MAXIMUM_IT) break;  //上限に達した場合
+            xMid = (x0 * func.apply(x1) - x1 * func.apply(x0)) / (func.apply(x1) - func.apply(x0));
+            value = func.apply(xMid);//適用
+            System.out.println("xNext = " + xMid + ", f(xNext) = " + value + ", xPastNext = " + pastMid);
+
+            if (Math.abs(xMid - pastMid) < EPSILON || value == 0) {
+                answer_ = xMid;
+                System.out.printf("x = " + answer_ + " at iteration " + (iteration_ - 1) + ".");
+                return true;
+            }
+            pastMid = xMid;
+            if ((value < 0)) { //符号違いだったら
+                x1 = xMid;
+            } else {
+                x0 = xMid;
+            }
+        }
+        return false;
+    }
+
+
+    private boolean _solveNLEByNewton() {
+        double dx = 0.00000000001;//微小な値を設定する。
+        Function<Double, Double> func = x -> Math.exp(x) - alfa_ * x;
+        Function<Double, Double> funcp = x -> (func.apply(x + dx) - func.apply(x)) / dx; //微分した値
+        double next, line, value;
+        iteration_ = 0;
+        next = initialValue_;
+        while (true) {
+            if (++iteration_ == MAXIMUM_IT) break;  //上限に達した場合
+
+            line = funcp.apply(next);
+            value = next - func.apply(next) / line;
+            System.out.println("xNext = " + value + ", f(xNext) = " + func.apply(value));
+
+            //収束条件
+            if (Math.abs(value - next) < EPSILON) {
+                answer_ = value;
+                System.out.println("x = " + answer_ + " at iteration " + (iteration_ - 1) + ".");
+                return true;
+            } else {
+                next = value;
+            }
+        }
+        return false;
+    }
+
 
     public static void main(String[] args) {
-//        NonlinearEquation eqn = new NonlinearEquation();
+        NonlinearEquation eqn = new NonlinearEquation(1.19);//課題で述べられていた初期値
 //        eqn.initialValue_ = 4.0;
 //        eqn._alfa = 5.0;
 //        if (!eqn._solveNLEByLinearIteration()) {
 //            System.out.println("解が見つからなかった");
 //        }
-        NonlinearEquation eqn = new NonlinearEquation(3, 0);
-        if (!eqn._solveNLEByRegulaFalsi()) {
-            System.out.println("解が見つからなかった");
+//        NonlinearEquation eqn = new NonlinearEquation(3, 0);
+//        if (!eqn._solveNLEByRegulaFalsi()) {
+//            System.out.println("解が見つからなかった");
+//        }
+        if (!eqn._solveNLEByNewton()) {
+            System.out.println("解が見つかりませんでした");
         }
+
     }
 }
